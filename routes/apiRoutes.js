@@ -1,5 +1,5 @@
 const db = require("../models");
-
+const mongoose = require("mongoose")
 function apiRoutes(app) {
     app.get("/api/workouts", function(req, res) {
         db.Workout.find().then(function(results){
@@ -14,9 +14,13 @@ function apiRoutes(app) {
         })
     })
     app.put("/api/workouts/:id", function(req, res) {
-       const id = req.params.id
-        db.Workout.update({_id:id}, {
-            exercises:{$push:req.body}
+       const id =  mongoose.Types.ObjectId(req.params.id) 
+       console.log(id)
+       console.log(req.body)
+        db.Workout.updateOne({_id:  id}, {
+            $push:{exercises:req.body}
+        },function(results){
+            res.json(results)
         })
     })
     app.get("/api/workouts/range", function(req, res) {
